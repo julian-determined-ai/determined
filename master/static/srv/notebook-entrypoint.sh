@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source /run/determined/task-logging-setup.sh
+trap 'source /run/determined/task-logging-teardown.sh' EXIT
 
 set -e
 
@@ -41,7 +42,7 @@ test -f "${STARTUP_HOOK}" && source "${STARTUP_HOOK}"
 "$DET_PYTHON_EXECUTABLE" /run/determined/jupyter/check_idle.py &
 
 READINESS_REGEX='^.*Jupyter Server .* is running.*$'
-exec jupyter lab --ServerApp.port=${NOTEBOOK_PORT} \
+jupyter lab --ServerApp.port=${NOTEBOOK_PORT} \
                  --ServerApp.allow_origin="*" \
                  --ServerApp.base_url="/proxy/${DET_TASK_ID}/" \
                  --ServerApp.allow_root=True \

@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+source /run/determined/task-logging-setup.sh
+trap 'source /run/determined/task-logging-teardown.sh' EXIT
+
 set -e
 
 export PATH="/run/determined/pythonuserbase/bin:$PATH"
@@ -19,4 +22,4 @@ fi
 
 "$DET_PYTHON_EXECUTABLE" -m determined.exec.prep_container
 
-exec "$DET_PYTHON_EXECUTABLE" -m determined.exec.gc_checkpoints "$@"
+"$DET_PYTHON_EXECUTABLE" -m determined.exec.gc_checkpoints "$@"

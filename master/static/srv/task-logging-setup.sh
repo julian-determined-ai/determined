@@ -27,4 +27,14 @@ if [ -n "$DET_K8S_LOG_TO_FILE" ]; then
     mkdir -p -m 755 $STDOUT_ROTATE_DIR
     mkdir -p -m 755 $STDERR_ROTATE_DIR
     exec > >(multilog n2 "$STDOUT_ROTATE_DIR")  2> >(multilog n2 "$STDERR_ROTATE_DIR")
+
+    # Create a fifo to monitor process substitution exits, and a count to know how many to wait on.
+    LOG_WAIT_FIFO=/run/determined/train/logs/wait.fifo
+    LOG_WAIT_COUNT=0
+    mkfifo $LOG_WAIT_FIFO
+
+    exec 3>&1 1> >(multilog n2 "$STDOUT_ROTATE_DIR"; : >$LOG_WAIT_FIFO) \
+         4>&2 2> >(multilog n2 "$STDERR_ROTATE_DIR"; : >$LOG_WAIT_FIFO)
+
+    ((LOG_WAIT_COUNT+=2))
 fi

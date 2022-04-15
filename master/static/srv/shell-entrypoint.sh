@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source /run/determined/task-logging-setup.sh
+trap 'source /run/determined/task-logging-teardown.sh' EXIT
 
 set -e
 
@@ -67,5 +68,5 @@ modified="/run/determined/ssh/authorized_keys"
 sed -e "s/^/$options /" "$unmodified" > "$modified"
 
 READINESS_REGEX="Server listening on"
-exec /usr/sbin/sshd "$@" \
+/usr/sbin/sshd "$@" \
     2> >(tee -p >("$DET_PYTHON_EXECUTABLE" /run/determined/check_ready_logs.py --ready-regex "$READINESS_REGEX") >&2)
