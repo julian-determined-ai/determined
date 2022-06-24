@@ -7,6 +7,8 @@ import { BrowserRouter } from 'react-router-dom';
 import StoreProvider, { StoreAction, useStoreDispatch } from 'contexts/Store';
 
 import useJupyterLabModal from './useJupyterLabModal';
+import { act } from 'react-dom/test-utils';
+import { time } from 'console';
 
 const MODAL_TITLE = 'Launch JupyterLab';
 const SIMPLE_CONFIG_TEMPLATE_TEXT = 'Template';
@@ -75,19 +77,18 @@ const setup = async () => {
 
 describe('useJupyterLabModal', () => {
   it('modal can be opened', async () => {
-    await setup();
+    await act(() => setup());
 
     expect(await screen.findByText(MODAL_TITLE)).toBeInTheDocument();
   });
 
   it('modal defaults to simple config', async () => {
-    await setup();
-
+    await act(() => setup());
     expect(await screen.findByText(SIMPLE_CONFIG_TEMPLATE_TEXT)).toBeInTheDocument();
   });
 
   it('switch modal to full config', async () => {
-    await setup();
+    await act(() => setup());
 
     await screen.findByText(MODAL_TITLE);
 
