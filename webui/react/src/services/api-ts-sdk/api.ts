@@ -5560,17 +5560,11 @@ export interface V1QueryTrialsRequest {
      */
     sorter?: V1TrialSorter;
     /**
-     * Offset for pagination.
-     * @type {number}
+     * Request to paginate the response.
+     * @type {V1PaginationRequest}
      * @memberof V1QueryTrialsRequest
      */
-    offset?: number;
-    /**
-     * Limit the number of trials. A value of 0 denotes no limit.
-     * @type {number}
-     * @memberof V1QueryTrialsRequest
-     */
-    limit?: number;
+    pagination?: V1PaginationRequest;
 }
 
 /**
@@ -5585,6 +5579,18 @@ export interface V1QueryTrialsResponse {
      * @memberof V1QueryTrialsResponse
      */
     trials?: Array<V1AugmentedTrial>;
+    /**
+     * Pagination information of the full dataset.
+     * @type {V1Pagination}
+     * @memberof V1QueryTrialsResponse
+     */
+    pagination?: V1Pagination;
+    /**
+     * 
+     * @type {number}
+     * @memberof V1QueryTrialsResponse
+     */
+    total?: number;
 }
 
 /**

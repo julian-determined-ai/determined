@@ -14,7 +14,7 @@ import { Highlights } from 'hooks/useHighlight';
 import { SettingsHook, UpdateSettings } from 'hooks/useSettings';
 import { TrialsWithMetadata } from 'pages/TrialsComparison/Trials/data';
 import { paths } from 'routes/utils';
-import { Determinedtrialv1State, V1AugmentedTrial } from 'services/api-ts-sdk';
+import { Determinedtrialv1State, V1AugmentedTrial, V1Pagination } from 'services/api-ts-sdk';
 import { ColorScale, glasbeyColor } from 'shared/utils/color';
 import { isNumber } from 'shared/utils/data';
 import { MetricType, TrialState } from 'types';
@@ -36,6 +36,7 @@ interface Props {
   highlights: Highlights<V1AugmentedTrial>;
   tableSettingsHook: SettingsHook<InteractiveTableSettings>;
   trialsWithMetadata: TrialsWithMetadata;
+  total: number;
 }
 
 const hpTitle = (hp: string) => <BadgeTag label={hp} tooltip="Hyperparameter">H</BadgeTag>;
@@ -48,10 +49,10 @@ const TrialTable: React.FC<Props> = ({
   containerRef,
   highlights,
   tableSettingsHook,
+  total,
 }: Props) => {
 
   const { settings, updateSettings } = tableSettingsHook;
-  
   const idColumn = useMemo(() => ({
     dataIndex: 'id',
     defaultWidth: 60,
@@ -300,7 +301,6 @@ const TrialTable: React.FC<Props> = ({
     // });
   }, [ columns.length ]);
 
-  const total = trials.data.length
   return (
     <InteractiveTable<V1AugmentedTrial>
       columns={columns}
@@ -309,7 +309,6 @@ const TrialTable: React.FC<Props> = ({
       pagination={getFullPaginationConfig({
         limit: settings.tableLimit,
         offset: settings.tableOffset,
-        total
       }, total)}
       rowClassName={highlights.rowClassName}
       rowKey="trialId"

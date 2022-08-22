@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 
 import { InteractiveTableSettings } from 'components/InteractiveTable';
 import LearningCurveChart from 'components/LearningCurveChart';
@@ -32,12 +32,23 @@ const TrialsComparison: React.FC<Props> = ({ projectId }) => {
 
   const C = useTrialCollections(projectId);
 
-  const trials = useFetchTrials({
+  const trialsQuery = useFetchTrials({
     filters: C.filters,
     limit: tableSettings.tableLimit,
     offset: tableSettings.tableOffset,
     sorter: C.sorter,
-  });
+  })
+
+  const {trials, pagination, total} = trialsQuery;
+
+  console.log("pagination", trialsQuery);
+  useEffect(() => {
+    updateSettings({
+      tableLimit:pagination.limit,
+      tableOffset:pagination.offset,
+    })
+  }, [pagination.limit,pagination.offset, total])
+
 
   const M = useMetricView(trials.metrics);
 
@@ -89,6 +100,7 @@ const TrialsComparison: React.FC<Props> = ({ projectId }) => {
             highlights={highlights}
             tableSettingsHook={tableSettingsHook}
             trialsWithMetadata={trials}
+            total={total}
             // handleTableChange={handleTableChange}
             // pageSize={pageSize}
           />

@@ -794,3 +794,7 @@ export enum TrialState {
   COMPLETED ='COMPLETED',
   ERROR = 'ERROR'
 }
+
+export interface QueryTrialPagination extends WithPagination {
+  trials: Api.V1AugmentedTrial[]
+}

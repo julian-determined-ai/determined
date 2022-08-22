@@ -426,20 +426,20 @@ func (a *apiServer) QueryTrials(ctx context.Context,
 		}
 	}
 
-	if req.Limit == 0 {
-		req.Limit = 10
+	if req.Pagination.Limit == 0 {
+		req.Pagination.Limit = 10
 	}
 
 	q = db.PaginateBun(
 		q,
 		orderColumn,
 		orderDirection,
-		int(req.Offset),
-		int(req.Limit),
+		int(req.Pagination.Offset),
+		int(req.Pagination.Limit),
 	)
 
-	err = q.Scan(context.TODO())
-
+	count, err := q.ScanAndCount(context.TODO())
+	
 	if err != nil {
 		return nil, fmt.Errorf("error querying for trials %w", err)
 	}
@@ -450,7 +450,13 @@ func (a *apiServer) QueryTrials(ctx context.Context,
 		resp.Trials = append(resp.Trials, trial.Proto())
 	}
 
-	return &resp, nil
+	resp.Total = int32(count)
+
+	if req.Pagination == nil {
+		req.Pagination = &apiv1.PaginationRequest{}
+	}
+
+	return &resp, a.paginate(&resp.Pagination, &resp.Trials, req.Pagination.Offset, req.Pagination.Limit)
 }
 
 func (a *apiServer) PatchTrials(ctx context.Context, 

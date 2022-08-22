@@ -155,10 +155,10 @@ message QueryTrialsRequest {
   TrialFilters filters = 1;
   // Sort trials by the given field.
   TrialSorter sorter = 2;
-  // Offset for pagination.
-  int32 offset = 3;
-  // Limit the number of trials. A value of 0 denotes no limit.
-  int32 limit = 4;
+
+  // Request to paginate the response.
+  PaginationRequest pagination = 3; 
+
 }
 
 // Augmented Trial struct to service trail comparison functionality
@@ -236,6 +236,11 @@ message AugmentedTrial {
 message QueryTrialsResponse {
   // The trials matching the query, with extra data.
   repeated AugmentedTrial trials = 1;
+  // Pagination information of the full dataset.
+  Pagination pagination = 2;
+
+  // The total number of records
+  int32 total = 3; 
 }
 
 // Specifies whether a tag should be added or removed
