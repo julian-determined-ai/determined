@@ -41,7 +41,6 @@ const TrialsComparison: React.FC<Props> = ({ projectId }) => {
 
   const {trials, pagination, total} = trialsQuery;
 
-  console.log("pagination", trialsQuery);
   useEffect(() => {
     updateSettings({
       tableLimit:pagination.limit,
